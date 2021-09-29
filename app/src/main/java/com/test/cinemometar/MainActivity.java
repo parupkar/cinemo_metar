@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 searchTxt = searchEditTxt.getText().toString().toUpperCase(Locale.ROOT);
-                if(!searchTxt.isEmpty()){
+                if(validateInput(searchTxt)){
                     try{
                         String raw = db.getStation(searchTxt).getData();
                         String decoded = db.getStation(searchTxt).getDecoded();
@@ -61,14 +60,17 @@ public class MainActivity extends AppCompatActivity {
 
 
                 }else{
-                    Toast.makeText(MainActivity.this, "Station name required!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.station_validate, Toast.LENGTH_LONG).show();
                     searchEditTxt.setFocusable(true);
                 }
             }
         });
 
     }
+    public static Boolean validateInput(String s){
 
+        return !s.isEmpty();
+    }
     public void getFiles() throws Exception {
         Request request = new Request.Builder()
                 .url("https://tgftp.nws.noaa.gov/data/observations/metar/stations/")

@@ -23,7 +23,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        //3rd argument to be passed is CursorFactory instance
     }
 
     // Creating Tables
@@ -57,13 +56,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DATA, station.getData()); // raw data
         values.put(KEY_DECODED, station.getDecoded()); // decoded data
 
-        // Inserting Row
+        // Insert Row
         db.insert(TABLE_STATIONS, null, values);
-        //2nd argument is String containing nullColumnHack
-        db.close(); // Closing database connection
+        db.close(); // Close database connection
     }
 
-    // code to get the single station
+    // code to get the single station data
     Station getStation(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -74,10 +72,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Station station = new Station(Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
-        // return station
         return station;
     }
-    // code to get the single station
+    // code to get the check station if exist
     Boolean checkStation(String id) {
 
         String countQuery = "SELECT  * FROM " + TABLE_STATIONS + " WHERE " + KEY_STAION_ID + " = '" + id +"'";
@@ -91,34 +88,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return true;
     }
 
-    // code to get all stations in a list view
-    public List<Station> getAllStations() {
-        List<Station> stationList = new ArrayList<Station>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_STATIONS;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Station station = new Station();
-                station.setID(Integer.parseInt(cursor.getString(0)));
-                station.setStationId(cursor.getString(1));
-                station.setAirportName(cursor.getString(2));
-                station.setData(cursor.getString(3));
-                station.setDecoded(cursor.getString(4));
-                // Adding station to list
-                stationList.add(station);
-            } while (cursor.moveToNext());
-        }
-
-        // return station list
-        return stationList;
-    }
-
-    // code to update the single station
+    // code to update the single station data
     public int updateStation(Station station) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -130,7 +100,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         values.put(KEY_DECODED, station.getDecoded()); // decoded data
 
-        // updating row
+        // updating data
         return db.update(TABLE_STATIONS, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(station.getID()) });
     }
